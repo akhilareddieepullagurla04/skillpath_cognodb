@@ -1,0 +1,413 @@
+/* ---------------------------------------------------------------------
+   SkillPath — visual design system
+   Direction: expedition / trail-map. Skills are terrain, prerequisite
+   chains are trails, and a job is a summit you route toward. This
+   drives the color palette (survey-map ink + trail-blaze gold) and the
+   signature element: a learning path rendered as waypoints on a route.
+--------------------------------------------------------------------- */
+
+:root {
+  --ink-900: #161d27;
+  --ink-800: #1b2430;
+  --ink-700: #232e3d;
+  --ink-600: #2e3b4d;
+  --line-500: #445168;
+
+  --gold-400: #d9ac5c;
+  --gold-500: #c99a4b;
+  --gold-700: #8a6a2f;
+
+  --sage-400: #86ab98;
+  --sage-500: #6b9080;
+
+  --clay-500: #c76e5a;
+
+  --text-100: #f4f0e6;
+  --text-300: #cfc8ba;
+  --text-500: #8f8b82;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Public Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  --radius: 10px;
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--ink-900);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(201, 154, 75, 0.06), transparent 45%),
+    repeating-linear-gradient(
+      transparent,
+      transparent 39px,
+      rgba(255, 255, 255, 0.015) 39px,
+      rgba(255, 255, 255, 0.015) 40px
+    );
+  color: var(--text-100);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+/* Respect reduced-motion preference throughout the app */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+.app-shell {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+}
+
+/* ---- Header ---------------------------------------------------- */
+
+.app-header {
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--ink-600);
+  padding-bottom: 28px;
+}
+
+.app-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--gold-400);
+  margin-bottom: 10px;
+}
+
+.app-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 0 0 12px;
+  letter-spacing: -0.01em;
+}
+
+.app-subtitle {
+  color: var(--text-300);
+  font-size: 16px;
+  max-width: 52ch;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.health-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  margin-top: 16px;
+  border: 1px solid var(--ink-600);
+}
+
+.health-pill.ok { color: var(--sage-400); border-color: rgba(134, 171, 152, 0.35); }
+.health-pill.bad { color: var(--clay-500); border-color: rgba(199, 110, 90, 0.35); }
+.health-pill.loading { color: var(--text-500); }
+
+.health-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* ---- Controls ---------------------------------------------------- */
+
+.controls-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 220px;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-500);
+}
+
+select {
+  background: var(--ink-700);
+  color: var(--text-100);
+  border: 1px solid var(--ink-600);
+  border-radius: var(--radius);
+  padding: 11px 14px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s ease;
+}
+
+select:hover {
+  border-color: var(--line-500);
+}
+
+select:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+/* ---- Panels ---------------------------------------------------- */
+
+.panel {
+  background: var(--ink-700);
+  border: 1px solid var(--ink-600);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-panel);
+  padding: 24px 26px;
+  margin-bottom: 20px;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 19px;
+  margin: 0 0 4px;
+}
+
+.panel-hint {
+  color: var(--text-500);
+  font-size: 13px;
+  margin: 0 0 18px;
+}
+
+/* ---- Job cards ---------------------------------------------------- */
+
+.job-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.job-card {
+  border: 1px solid var(--ink-600);
+  border-radius: 8px;
+  padding: 14px 16px;
+  background: var(--ink-800);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.job-card.qualified {
+  border-left: 3px solid var(--sage-500);
+}
+
+.job-card.almost {
+  border-left: 3px solid var(--gold-500);
+}
+
+.job-info h4 {
+  margin: 0 0 3px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.job-info .company {
+  color: var(--text-500);
+  font-size: 13px;
+}
+
+.missing-skills {
+  margin-top: 8px;
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.skill-chip {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  background: rgba(201, 154, 75, 0.12);
+  color: var(--gold-400);
+  border: 1px solid rgba(201, 154, 75, 0.25);
+}
+
+.badge {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+  align-self: center;
+}
+
+.badge.qualified {
+  color: var(--sage-400);
+  background: rgba(134, 171, 152, 0.12);
+  border: 1px solid rgba(134, 171, 152, 0.3);
+}
+
+.badge.almost {
+  color: var(--gold-400);
+  background: rgba(201, 154, 75, 0.12);
+  border: 1px solid rgba(201, 154, 75, 0.3);
+}
+
+/* ---- SIGNATURE ELEMENT: the trail route ----------------------------
+   Renders a learning path as waypoints connected by a dashed trail,
+   instead of a plain list — this is the page's one deliberate flourish. */
+
+.trail {
+  position: relative;
+  padding: 8px 0 8px 4px;
+  margin: 6px 0 18px;
+}
+
+.trail-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.trail-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 92px;
+}
+
+.trail-marker {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold-500);
+  border: 2px solid var(--ink-800);
+  box-shadow: 0 0 0 2px var(--gold-700);
+  flex-shrink: 0;
+}
+
+.trail-node:first-child .trail-marker {
+  background: var(--sage-500);
+  box-shadow: 0 0 0 2px var(--sage-400);
+}
+
+.trail-node.target .trail-marker {
+  background: var(--clay-500);
+  box-shadow: 0 0 0 2px rgba(199, 110, 90, 0.6);
+}
+
+.trail-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-align: center;
+  color: var(--text-300);
+  max-width: 100px;
+}
+
+.trail-link {
+  flex: 1;
+  min-width: 28px;
+  height: 0;
+  border-top: 2px dashed var(--line-500);
+  margin: 0 4px;
+  margin-bottom: 28px;
+}
+
+.trail-no-path {
+  font-size: 13px;
+  color: var(--text-500);
+  font-style: italic;
+}
+
+/* ---- Course recommendations ---------------------------------------------------- */
+
+.course-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ink-600);
+  gap: 16px;
+}
+
+.course-row:last-child {
+  border-bottom: none;
+}
+
+.course-info h4 {
+  margin: 0 0 2px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.course-info .provider {
+  color: var(--text-500);
+  font-size: 12px;
+}
+
+.coverage-pill {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--sage-400);
+  white-space: nowrap;
+}
+
+/* ---- States ---------------------------------------------------- */
+
+.empty-state {
+  color: var(--text-500);
+  font-size: 14px;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.loading-state {
+  color: var(--text-500);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  padding: 24px 0;
+  text-align: center;
+}
+
+.error-state {
+  color: var(--clay-500);
+  background: rgba(199, 110, 90, 0.08);
+  border: 1px solid rgba(199, 110, 90, 0.25);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  font-size: 14px;
+}
+
+.error-state strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+@media (max-width: 640px) {
+  .app-title { font-size: 30px; }
+  .trail-node { min-width: 74px; }
+}
